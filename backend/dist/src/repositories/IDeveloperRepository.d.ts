@@ -1,8 +1,7 @@
-import { FindOneOptions } from 'typeorm';
-import { Developers } from '../entity/developers';
+import { Developers } from '../models/developers';
 interface IDeveloperDTO {
     id: number;
-    nivel_id: string;
+    level: number;
     nome: string;
     sexo: string;
     data_nascimento: Date;
@@ -10,9 +9,16 @@ interface IDeveloperDTO {
     hobby: string;
 }
 interface IDeveloperRepository {
+    create(developer: Omit<IDeveloperDTO, 'id'>): Promise<Developers>;
+    findAll(): Promise<Developers[]>;
     findById(id: number): Promise<Developers | undefined>;
-    save(item: any): Promise<Developers>;
-    insert(nivel_id: IDeveloperDTO): Promise<Partial<Developers>>;
-    findOneOrFailCustom(options: FindOneOptions<Developers>, error: any): Promise<Developers>;
+    update(id: number, data: Partial<IDeveloperDTO>): Promise<Developers>;
+    delete(id: number): Promise<void>;
+    findAndCountDevelopers(query: string, page: number, pageSize: number): Promise<{
+        developers: Developers[];
+        total: number;
+        currentPage: number;
+        lastPage: number;
+    }>;
 }
 export { IDeveloperRepository, IDeveloperDTO };

@@ -26,34 +26,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppDataSource = void 0;
 require("reflect-metadata");
-const typeorm_1 = require("typeorm");
-const user_entity_1 = require("./entity/user.entity");
-const ormconfig_js_1 = __importDefault(require("../ormconfig.js"));
 const dotenv = __importStar(require("dotenv"));
-const routes_1 = __importDefault(require("./routes"));
+const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const express_1 = __importDefault(require("express"));
+const developer_routes_1 = __importDefault(require("./routes/developer.routes"));
+const level_routes_1 = __importDefault(require("./routes/level.routes"));
+const data_source_1 = require("./data-source");
+const swagger_json_1 = __importDefault(require("./swagger.json"));
+const cors_1 = __importDefault(require("cors"));
 dotenv.config({
     path: '.env',
 });
 const app = (0, express_1.default)();
-exports.AppDataSource = new typeorm_1.DataSource(ormconfig_js_1.default);
 const startServer = async () => {
     try {
-        await exports.AppDataSource.initialize();
-        app.use(routes_1.default);
-        const port = process.env.API_PORT;
+        await data_source_1.AppDataSource.initialize();
+        app.use((0, cors_1.default)());
+        const port = process.env.PORT;
         app.use(express_1.default.json());
-        app.get("/users", async (req, res) => {
-            const users = await exports.AppDataSource.manager.find(user_entity_1.User);
-            res.json(users);
-        });
-        app.post("/users", async (req, res) => {
-            const user = exports.AppDataSource.manager.create(user_entity_1.User, req.body);
-            await exports.AppDataSource.manager.save(user);
-            res.status(201).json(user);
-        });
+        app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_json_1.default));
+        app.use("/api", developer_routes_1.default);
+        app.use("/api", level_routes_1.default);
         app.listen(port, () => {
             console.log(`Servidor está rodando na porta ${port}`);
         });
