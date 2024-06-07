@@ -20,7 +20,7 @@ const startServer = async () => {
   try {
       await AppDataSource.initialize();
       app.use(cors());
-      const port = process.env.API_PORT;
+      const port = process.env.PORT || process.env.API_PORT;
       app.use(express.json());
       app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
