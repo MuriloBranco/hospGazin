@@ -5,6 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev:server": "ts-node-dev --ignore-watch node_modules src/server.ts",
+    "start": "node src/server.js",
+    "build:frontend": "cd ../frontend && npm install && npm run build",
+    "postinstall": "npm run build:frontend",
     "test": "echo \"Error: no test specified\" && exit 1",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
     "test-db": "ts-node src/testDatabaseConnection.ts",
