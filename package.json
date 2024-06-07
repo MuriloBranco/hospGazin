@@ -2,7 +2,7 @@
     "name": "meu-projeto-fullstack",
     "version": "1.0.0",
     "engines": {
-      "node": "20.12.13"
+      "node": "20.11.1"
     },
     "scripts": {
       "install:frontend": "cd frontend && npm install",
